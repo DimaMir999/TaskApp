@@ -55,9 +55,8 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         photosListView = (ListView) findViewById(R.id.photos_list);
         dictanceView = (TextView) findViewById(R.id.distance_view);
 
-        ArrayList<PhotoWithGeoTag> photosList = presenter.getListData();
         data = new ArrayList<Map<String, Object>>();
-
+        ArrayList<PhotoWithGeoTag> photosList = presenter.getListData();
         for (int i = 0; i < photosList.size(); i++) {
             Map<String, Object> itemMap = new HashMap<String, Object>();
             PhotoWithGeoTag photoObject = photosList.get(i);
@@ -90,6 +89,27 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra("markers", presenter.makeMarkerOptionsFromList());
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        data.clear();
+        ArrayList<PhotoWithGeoTag> photosList = presenter.getListData();
+        for (int i = 0; i < photosList.size(); i++) {
+            Map<String, Object> itemMap = new HashMap<String, Object>();
+            PhotoWithGeoTag photoObject = photosList.get(i);
+            itemMap.put(ATTRIBUTE_NAME_TEXT, photoObject.getDate().toString());
+            Bitmap photo = photoObject.getPhoto();
+            Log.v("dimamir999", "photo loaded");
+            if(photo.getHeight() != LIST_PHOTO_HEIGHT || photo.getWidth() != LIST_PHOTO_WIDTH) {
+                Log.v("dimamir999", "photo scaled");
+                photo = photoScaler.scaleForList(photo, LIST_PHOTO_HEIGHT, LIST_PHOTO_WIDTH);
+            }
+            itemMap.put(ATTRIBUTE_NAME_IMAGE, photo);
+            data.add(itemMap);
+        }
+        adapter.notifyDataSetChanged();
+        super.onResume();
     }
 
     @Override
