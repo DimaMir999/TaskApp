@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.dimamir999.testapp.activities.presenters.ListPhotosPresenter;
 import org.dimamir999.testapp.activities.views.ListPhotosActivity;
 
 public class LocationControlService extends Service {
@@ -43,7 +44,7 @@ public class LocationControlService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        pendingIntent = intent.getParcelableExtra(ListPhotosActivity.PENDING_INTENT_CODE);
+        pendingIntent = intent.getParcelableExtra(ListPhotosPresenter.PENDING_INTENT_CODE);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -58,7 +59,8 @@ public class LocationControlService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             if(lastLocation != null)
-                passedWay += location.distanceTo(lastLocation);
+                //paased way in km
+                passedWay += location.distanceTo(lastLocation) * 0.001;
             lastLocation = location;
             if(pendingIntent != null) {
                 Intent intent = new Intent().putExtra("distance", passedWay);

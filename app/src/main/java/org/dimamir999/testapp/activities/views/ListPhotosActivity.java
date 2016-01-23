@@ -33,7 +33,6 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     private static final int LIST_PHOTO_HEIGHT = 250;
     private static final int LIST_PHOTO_WIDTH = 250;
     public static final int DISTANCE_RESPONSE = 0;
-    public static final String PENDING_INTENT_CODE = "pending intent";
 
     private ListPhotosPresenter presenter;
     private ArrayList<Map<String, Object>> data;
@@ -98,7 +97,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         if(resultCode == DISTANCE_RESPONSE){
             double newDistance = data.getDoubleExtra("distance", -1);
             if(newDistance != -1)
-                dictanceView.setText("Total distace: " + newDistance);
+                dictanceView.setText("Total distace: " + String.format("%.3f", newDistance) + " km");
             Log.v("dimamir999", "successful recieve of the way");
         }
     }
@@ -131,10 +130,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
             stopService(new Intent(this, LocationControlService.class));
             ((TextView) view).setText("Start scan my location");
         } else {
-            Intent intent = new Intent(this, LocationControlService.class);
-            PendingIntent pendingIntent = createPendingResult(0, new Intent(), 0);;
-            intent.putExtra(PENDING_INTENT_CODE, pendingIntent);
-            startService(intent);
+            presenter.startLocationControlService();
             ((TextView) view).setText("Stop scan my location");
             Log.v("dimamir999", "start service from ListPhotosActivity");
         }

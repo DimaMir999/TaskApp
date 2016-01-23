@@ -34,7 +34,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map_fragment);
         mapFragment.getMapAsync(this);
 
-        startLocationControlService();
         Log.v("dimamir999", "MapActivity created");
     }
 
@@ -47,19 +46,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         }
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(markers.get(markers.size() - 1).getPosition())
-                .zoom(13).build();
+                .zoom(12).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-    }
-
-
-    private void startLocationControlService(){
-        Thread serviceThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                startService(new Intent(MapActivity.this, LocationControlService.class));
-                Log.v("dimair999", "start service from map activity");
-            }
-        });
-        serviceThread.start();
     }
 }

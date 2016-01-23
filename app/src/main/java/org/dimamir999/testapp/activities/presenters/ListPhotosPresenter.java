@@ -1,7 +1,12 @@
 package org.dimamir999.testapp.activities.presenters;
 
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.format.Time;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -9,6 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.dimamir999.testapp.activities.views.IListPhotoView;
 import org.dimamir999.testapp.db.PhotoWithGeoTagDAO;
 import org.dimamir999.testapp.model.PhotoWithGeoTag;
+import org.dimamir999.testapp.services.LocationControlService;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +24,8 @@ import java.util.concurrent.TimeUnit;
  * Created by dimamir999 on 21.01.16.
  */
 public class ListPhotosPresenter {
+
+    public static final String PENDING_INTENT_CODE = "pending intent";
 
     private IListPhotoView view;
     private PhotoWithGeoTagDAO photoWithGeoTagDAO;
@@ -68,5 +76,20 @@ public class ListPhotosPresenter {
             photoWithGeoTagDAO.delete(ids[0]);
             return null;
         }
+    }
+
+    public void startLocationControlService(){
+        Thread serviceThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Activity context = view.getContextActivity();
+                Intent intent = new Intent(context, LocationControlService.class);
+                PendingIntent pendingIntent = context.createPendingResult(0, new Intent(), 0);;
+                intent.putExtra(PENDING_INTENT_CODE, pendingIntent);
+                context.startService(intent);
+                Log.v("dimair999", "start service from map activity");
+            }
+        });
+        serviceThread.start();
     }
 }
