@@ -14,4 +14,8 @@
     <string name="distance_text">Total distance:</string>
     <string name="kilometers">km</string>
     <string name="delete_item">delete</string>
+    <string name="load">load</string>
+    <string name="add_new_photo">Add to list</string>
+    <string name="url">From URL:</string>
+    <string name="gallery">From gallery:</string>
 </resources>

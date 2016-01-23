@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -45,13 +47,15 @@ public class PickPhotoPresenter {
         imageLoader.execute(url);
     }
 
-    public void addNewPhoto(Bitmap photo){
-        GeoLocationService locationService = new GeoLocationService(view.getContextActivity());
-        Location location = locationService.getCurrentLocation();
-        Date currentDate = new Date(System.currentTimeMillis());
-        if(photo == null){
+    public void addNewPhoto(Drawable drawable) {
+        Bitmap photo;
+        if (drawable == null) {
             view.showErrorMessage("Please load photo");
-        }else {
+        } else {
+            photo = ((BitmapDrawable) drawable).getBitmap();
+            GeoLocationService locationService = new GeoLocationService(view.getContextActivity());
+            Location location = locationService.getCurrentLocation();
+            Date currentDate = new Date(System.currentTimeMillis());
             if (location != null) {
                 PhotoSaver saver = new PhotoSaver(view.getContextActivity());
                 String path = saver.savePhoto(photo);

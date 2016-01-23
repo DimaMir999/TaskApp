@@ -54,7 +54,7 @@ public class PickPhotoFragment extends Fragment implements IPickPhotoView {
             @Override
             public void onClick(View v) {
                 Log.v("dimamir999", "handle click on add photo button");
-                presenter.addNewPhoto(((BitmapDrawable) photoView.getDrawable()).getBitmap());
+                presenter.addNewPhoto(photoView.getDrawable());
             }
         });
         presenter = new PickPhotoPresenter(this);

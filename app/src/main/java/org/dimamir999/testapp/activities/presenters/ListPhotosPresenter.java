@@ -65,7 +65,7 @@ public class ListPhotosPresenter {
         ArrayList<MarkerOptions> markers = new ArrayList<MarkerOptions>();
         for(PhotoWithGeoTag userPhoto : viewedPhotos){
             markers.add(new MarkerOptions().position(new LatLng(userPhoto.getLatitude(), userPhoto.getLongitude()))
-                    .title(userPhoto.getDate().toString()).snippet("Additional text"));
+                    .title(userPhoto.getDate().toString()));
         }
         return markers;
     }
@@ -88,7 +88,6 @@ public class ListPhotosPresenter {
                 PendingIntent pendingIntent = context.createPendingResult(0, new Intent(), 0);;
                 intent.putExtra(PENDING_INTENT_CODE, pendingIntent);
                 context.startService(intent);
-                Log.v("dimair999", "start service from map activity");
             }
         });
         serviceThread.start();
