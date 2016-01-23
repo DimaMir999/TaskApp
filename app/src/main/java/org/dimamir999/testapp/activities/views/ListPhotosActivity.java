@@ -120,9 +120,10 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == DISTANCE_RESPONSE){
             double newDistance = data.getDoubleExtra(LocationControlService.DISTANCE_CODE, -1);
-            if(newDistance != -1)
-                dictanceView.setText(R.string.distance_text + " " + String.format("%.3f", newDistance)
-                        + " " + R.string.kilometers);
+            if(newDistance != -1) {
+                dictanceView.setText("Total distance: " + String.format("%.3f", newDistance)
+                        + " km");
+            }
             Log.v("dimamir999", "successful recieve of the way");
         }
     }
