@@ -16,6 +16,7 @@ import org.dimamir999.testapp.activities.views.ListPhotosActivity;
 
 public class LocationControlService extends Service {
 
+    public static final String DISTANCE_CODE = "passed way";
     public static boolean isRunning = false;
 
     private MyLocationListener locationListener;
@@ -63,7 +64,7 @@ public class LocationControlService extends Service {
                 passedWay += location.distanceTo(lastLocation) * 0.001;
             lastLocation = location;
             if(pendingIntent != null) {
-                Intent intent = new Intent().putExtra("distance", passedWay);
+                Intent intent = new Intent().putExtra(DISTANCE_CODE, passedWay);
                 try {
                     pendingIntent.send(LocationControlService.this, ListPhotosActivity.DISTANCE_RESPONSE, intent);
                     Log.v("dimamir999", "send successful");

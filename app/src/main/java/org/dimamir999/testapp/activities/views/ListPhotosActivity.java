@@ -47,11 +47,6 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_photos);
         presenter = new ListPhotosPresenter(this);
-        if(LocationControlService.isRunning) {
-            ((TextView) findViewById(R.id.turn_service_button)).setText("Stop scan my location");
-        } else {
-            ((TextView) findViewById(R.id.turn_service_button)).setText("Start scan my location");
-        }
         photosListView = (ListView) findViewById(R.id.photos_list);
         dictanceView = (TextView) findViewById(R.id.distance_view);
 
@@ -80,19 +75,17 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         registerForContextMenu(photosListView);
     }
 
-    public void toPickPhotoActivity(View view){
-        Intent intent = new Intent(this, PhotoPickActivity.class);
-        startActivity(intent);
-    }
-
-    public void toMapActivity(View view){
-        Intent intent = new Intent(this, MapActivity.class);
-        intent.putExtra("markers", presenter.makeMarkerOptionsFromList());
-        startActivity(intent);
+    private void setServiceButtonText(){
+        if(LocationControlService.isRunning) {
+            ((TextView) findViewById(R.id.turn_service_button)).setText(R.string.passive_service);
+        } else {
+            ((TextView) findViewById(R.id.turn_service_button)).setText(R.string.active_service);
+        }
     }
 
     @Override
     protected void onResume() {
+        setServiceButtonText();
         data.clear();
         ArrayList<PhotoWithGeoTag> photosList = presenter.getListData();
         for (int i = 0; i < photosList.size(); i++) {
@@ -112,12 +105,24 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         super.onResume();
     }
 
+    public void toPickPhotoActivity(View view){
+        Intent intent = new Intent(this, PhotoPickActivity.class);
+        startActivity(intent);
+    }
+
+    public void toMapActivity(View view){
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra(ListPhotosPresenter.MARKERS_CODE, presenter.makeMarkerOptionsFromList());
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == DISTANCE_RESPONSE){
-            double newDistance = data.getDoubleExtra("distance", -1);
+            double newDistance = data.getDoubleExtra(LocationControlService.DISTANCE_CODE, -1);
             if(newDistance != -1)
-                dictanceView.setText("Total distace: " + String.format("%.3f", newDistance) + " km");
+                dictanceView.setText(R.string.distance_text + " " + String.format("%.3f", newDistance)
+                        + " " + R.string.kilometers);
             Log.v("dimamir999", "successful recieve of the way");
         }
     }
@@ -130,7 +135,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, DELETE_ITEM_ID, 0, "delete");
+        menu.add(0, DELETE_ITEM_ID, 0, R.string.delete_item);
     }
 
     @Override
@@ -148,10 +153,10 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     public void changeGeoLocationServiceStatus(View view){
         if(LocationControlService.isRunning) {
             stopService(new Intent(this, LocationControlService.class));
-            ((TextView) view).setText("Start scan my location");
+            ((TextView) view).setText(R.string.active_service);
         } else {
             presenter.startLocationControlService();
-            ((TextView) view).setText("Stop scan my location");
+            ((TextView) view).setText(R.string.passive_service);
             Log.v("dimamir999", "start service from ListPhotosActivity");
         }
     }

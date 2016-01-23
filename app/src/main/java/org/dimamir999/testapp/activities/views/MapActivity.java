@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.dimamir999.testapp.R;
+import org.dimamir999.testapp.activities.presenters.ListPhotosPresenter;
 import org.dimamir999.testapp.activities.presenters.MapPresenter;
 import org.dimamir999.testapp.services.LocationControlService;
 
@@ -40,7 +41,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        ArrayList<MarkerOptions> markers = getIntent().getParcelableArrayListExtra("markers");
+        ArrayList<MarkerOptions> markers = getIntent().getParcelableArrayListExtra(ListPhotosPresenter.MARKERS_CODE);
         for(MarkerOptions marker : markers){
             map.addMarker(marker);
         }

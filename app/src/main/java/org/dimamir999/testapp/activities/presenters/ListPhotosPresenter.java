@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class ListPhotosPresenter {
 
     public static final String PENDING_INTENT_CODE = "pending intent";
+    public static final String MARKERS_CODE = "markers";
 
     private IListPhotoView view;
     private PhotoWithGeoTagDAO photoWithGeoTagDAO;

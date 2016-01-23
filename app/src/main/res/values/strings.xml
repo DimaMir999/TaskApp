@@ -6,4 +6,12 @@
     <string name="title_activity_photo_pick">PhotoPickActivity</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_list_photos">ListPhotosActivity</string>
+    <string name="start_distance_string">Total distance 0,000 km</string>
+    <string name="new_photo">New photo</string>
+    <string name="to_map">To map</string>
+    <string name="passive_service">Stop scan my location</string>
+    <string name="active_service">Start scan my location</string>
+    <string name="distance_text">Total distance:</string>
+    <string name="kilometers">km</string>
+    <string name="delete_item">delete</string>
 </resources>
