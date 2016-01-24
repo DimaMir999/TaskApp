@@ -1,7 +1,6 @@
 package org.dimamir999.testapp.activities.views;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -15,12 +14,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.dimamir999.testapp.R;
 import org.dimamir999.testapp.activities.presenters.ListPhotosPresenter;
 import org.dimamir999.testapp.activities.presenters.MapPresenter;
-import org.dimamir999.testapp.services.LocationControlService;
+import org.dimamir999.testapp.model.PhotoWithGeoTag;
 
 import java.util.ArrayList;
 
 
-public class MapActivity extends Activity implements OnMapReadyCallback {
+public class MapActivity extends Activity implements OnMapReadyCallback, IMapView {
 
     private GoogleMap map;
     private MapPresenter presenter;
@@ -29,7 +28,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        presenter = new MapPresenter();
+        presenter = new MapPresenter(this);
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map_fragment);
@@ -41,7 +40,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        ArrayList<MarkerOptions> markers = getIntent().getParcelableArrayListExtra(ListPhotosPresenter.MARKERS_CODE);
+        ArrayList<PhotoWithGeoTag> photoObjects = getIntent().getParcelableArrayListExtra(ListPhotosPresenter.PHOTO_OBJECTS);
+        ArrayList<MarkerOptions> markers = presenter.makeMarkerOptionsFromList(photoObjects);
         for(MarkerOptions marker : markers){
             map.addMarker(marker);
         }

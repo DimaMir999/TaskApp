@@ -3,6 +3,8 @@ package org.dimamir999.testapp.model;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -17,7 +19,7 @@ import java.util.Date;
 /**
  * Created by dimamir999 on 17.01.16.
  */
-public class PhotoWithGeoTag {
+public class PhotoWithGeoTag implements Parcelable{
 
     private long id;
     private Bitmap photo;
@@ -109,5 +111,41 @@ public class PhotoWithGeoTag {
                 ", date=" + date +
                 ", path='" + path + '\'' +
                 '}';
+    }
+
+    protected PhotoWithGeoTag(Parcel in) {
+        id = in.readLong();
+        date = new Date(in.readLong());
+        photo = in.readParcelable(Bitmap.class.getClassLoader());
+        longitude = in.readDouble();
+        latitude = in.readDouble();
+        path = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeLong(date.getTime());
+        dest.writeParcelable(photo, flags);
+        dest.writeDouble(longitude);
+        dest.writeDouble(latitude);
+        dest.writeString(path);
+    }
+
+    public static final Creator<PhotoWithGeoTag> CREATOR = new Creator<PhotoWithGeoTag>() {
+        @Override
+        public PhotoWithGeoTag createFromParcel(Parcel in) {
+            return new PhotoWithGeoTag(in);
+        }
+
+        @Override
+        public PhotoWithGeoTag[] newArray(int size) {
+            return new PhotoWithGeoTag[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

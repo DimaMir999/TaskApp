@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class ListPhotosPresenter {
 
     public static final String PENDING_INTENT_CODE = "pending intent";
-    public static final String MARKERS_CODE = "markers";
+    public static final String PHOTO_OBJECTS = "photo objects";
 
     private IListPhotoView view;
     private PhotoWithGeoTagDAO photoWithGeoTagDAO;
@@ -61,14 +61,14 @@ public class ListPhotosPresenter {
         remover.execute(photoObject.getId());
     }
 
-    public ArrayList<MarkerOptions> makeMarkerOptionsFromList(){
-        ArrayList<MarkerOptions> markers = new ArrayList<MarkerOptions>();
-        for(PhotoWithGeoTag userPhoto : viewedPhotos){
-            markers.add(new MarkerOptions().position(new LatLng(userPhoto.getLatitude(), userPhoto.getLongitude()))
-                    .title(userPhoto.getDate().toString()));
-        }
-        return markers;
-    }
+//    public ArrayList<MarkerOptions> makeMarkerOptionsFromList(){
+//        ArrayList<MarkerOptions> markers = new ArrayList<MarkerOptions>();
+//        for(PhotoWithGeoTag userPhoto : viewedPhotos){
+//            markers.add(new MarkerOptions().position(new LatLng(userPhoto.getLatitude(), userPhoto.getLongitude()))
+//                    .title(userPhoto.getDate().toString()));
+//        }
+//        return markers;
+//    }
 
     private class AsyncRemover extends AsyncTask<Long, Void, Void> {
 

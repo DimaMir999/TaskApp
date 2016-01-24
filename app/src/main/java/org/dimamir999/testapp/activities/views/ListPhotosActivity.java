@@ -1,7 +1,6 @@
 package org.dimamir999.testapp.activities.views;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -112,7 +111,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
 
     public void toMapActivity(View view){
         Intent intent = new Intent(this, MapActivity.class);
-        intent.putExtra(ListPhotosPresenter.MARKERS_CODE, presenter.makeMarkerOptionsFromList());
+        intent.putExtra(ListPhotosPresenter.PHOTO_OBJECTS, presenter.getListData());
         startActivity(intent);
     }
 
