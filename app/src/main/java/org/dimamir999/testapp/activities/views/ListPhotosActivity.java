@@ -27,7 +27,7 @@ import java.util.Map;
 public class ListPhotosActivity extends Activity implements IListPhotoView {
 
     private static final int DELETE_ITEM_ID = 1;
-    private static final String ATTRIBUTE_NAME_TEXT = "text";
+    private static final String ATTRIBUTE_NAME_DATE = "date";
     private static final String ATTRIBUTE_NAME_IMAGE = "image";
     private static final int LIST_PHOTO_HEIGHT = 250;
     private static final int LIST_PHOTO_WIDTH = 250;
@@ -35,7 +35,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     private static final int PICK_PHOTO_REQUEST_CODE = 1;
 
     private ListPhotosPresenter presenter;
-    private ArrayList<Map<String, Object>> data;
+    private ArrayList<Map<String, Object>> listData;
     private SimpleAdapter adapter;
     private PhotoScaler photoScaler = new PhotoScaler();
 
@@ -50,27 +50,42 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         photosListView = (ListView) findViewById(R.id.photos_list);
         dictanceView = (TextView) findViewById(R.id.distance_view);
 
-        data = new ArrayList<Map<String, Object>>();
-        ArrayList<PhotoWithGeoTag> photosList = presenter.getListData();
-        for (int i = 0; i < photosList.size(); i++) {
-            Map<String, Object> itemMap = new HashMap<String, Object>();
-            PhotoWithGeoTag photoObject = photosList.get(i);
-            itemMap.put(ATTRIBUTE_NAME_TEXT, photoObject.getDate().toString());
-            Bitmap photo = photoObject.getPhoto();
-            Log.v("dimamir999", "photo loaded");
-            if(photo.getHeight() != LIST_PHOTO_HEIGHT || photo.getWidth() != LIST_PHOTO_WIDTH) {
-                Log.v("dimamir999", "photo scaled");
-                photo = photoScaler.scaleForList(photo, LIST_PHOTO_HEIGHT, LIST_PHOTO_WIDTH);
+        if(savedInstanceState == null) {
+            listData = new ArrayList<Map<String, Object>>();
+            ArrayList<PhotoWithGeoTag> photosList = presenter.getListData();
+            for (int i = 0; i < photosList.size(); i++) {
+                Map<String, Object> itemData = new HashMap<String, Object>();
+                PhotoWithGeoTag photoObject = photosList.get(i);
+                itemData.put(ATTRIBUTE_NAME_DATE, photoObject.getDate().toString());
+                Bitmap photo = photoObject.getPhoto();
+                Log.v("dimamir999", "photo loaded");
+                if (photo.getHeight() != LIST_PHOTO_HEIGHT || photo.getWidth() != LIST_PHOTO_WIDTH) {
+                    Log.v("dimamir999", "photo scaled");
+                    photo = photoScaler.scaleForList(photo, LIST_PHOTO_HEIGHT, LIST_PHOTO_WIDTH);
+                }
+                itemData.put(ATTRIBUTE_NAME_IMAGE, photo);
+                listData.add(itemData);
             }
-            itemMap.put(ATTRIBUTE_NAME_IMAGE, photo);
-            data.add(itemMap);
+        } else {
+            ArrayList<String> dates = savedInstanceState.getStringArrayList(ATTRIBUTE_NAME_DATE);
+            ArrayList<Bitmap> scaledPhotos = savedInstanceState.getParcelableArrayList(ATTRIBUTE_NAME_IMAGE);
+            ArrayList<Map<String, Object>> restoredData = new ArrayList<>();
+            for(int i = 0;i < dates.size();i++){
+                Map<String, Object> itemData = new HashMap<>();
+                itemData.put(ATTRIBUTE_NAME_DATE, dates.get(i));
+                itemData.put(ATTRIBUTE_NAME_IMAGE, scaledPhotos.get(i));
+                restoredData.add(itemData);
+            }
+            listData = restoredData;
+            Log.v("dimamir999", "restore list data");
         }
-        String[] from = { ATTRIBUTE_NAME_TEXT,
+
+        String[] from = {ATTRIBUTE_NAME_DATE,
                 ATTRIBUTE_NAME_IMAGE };
         int[] to = { R.id.date_text_view,  R.id.photo_item_view};
-        adapter = new SimpleAdapter(this, data, R.layout.photo_list_item,
+        adapter = new SimpleAdapter(this, listData, R.layout.photo_list_item,
                 from, to);
-        adapter.setViewBinder(new ScalePhotoBinder());
+        adapter.setViewBinder(new PhotoBinder());
         photosListView.setAdapter(adapter);
         registerForContextMenu(photosListView);
     }
@@ -121,15 +136,11 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
                 photo = photoScaler.scaleForList(photo, LIST_PHOTO_HEIGHT, LIST_PHOTO_WIDTH);
             }
             Map<String, Object> itemMap = new HashMap<String, Object>();
-            itemMap.put(ATTRIBUTE_NAME_TEXT, photoObject.getDate().toString());
+            itemMap.put(ATTRIBUTE_NAME_DATE, photoObject.getDate().toString());
             itemMap.put(ATTRIBUTE_NAME_IMAGE, photo);
-            this.data.add(itemMap);
+            this.listData.add(itemMap);
             adapter.notifyDataSetChanged();
         }
-    }
-
-    public Activity getContextActivity(){
-        return this;
     }
 
     @Override
@@ -143,12 +154,42 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == DELETE_ITEM_ID) {
             AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            data.remove(menuInfo.position);
+            listData.remove(menuInfo.position);
             presenter.deletePhoto(menuInfo.position);
             adapter.notifyDataSetChanged();
             return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+//        ArrayList<String> dates = savedInstanceState.getStringArrayList(ATTRIBUTE_NAME_DATE);
+//        ArrayList<Bitmap> scaledPhotos = savedInstanceState.getParcelableArrayList(ATTRIBUTE_NAME_IMAGE);
+//        ArrayList<Map<String, Object>> restoredData = new ArrayList<>();
+//        for(int i = 0;i < dates.size();i++){
+//            Map<String, Object> itemData = new HashMap<>();
+//            itemData.put(ATTRIBUTE_NAME_DATE, dates.get(i));
+//            itemData.put(ATTRIBUTE_NAME_IMAGE, scaledPhotos.get(i));
+//            restoredData.add(itemData);
+//        }
+//        listData = restoredData;
+//        Log.v("dimamir999", "restore list data");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<String> dates = new ArrayList<String>();
+        ArrayList<Bitmap> scaledPhotos = new ArrayList<Bitmap>();
+        for(Map<String, Object> itemData :listData){
+            dates.add((String) itemData.get(ATTRIBUTE_NAME_DATE));
+            scaledPhotos.add((Bitmap) itemData.get(ATTRIBUTE_NAME_IMAGE));
+        }
+        outState.putStringArrayList(ATTRIBUTE_NAME_DATE, dates);
+        outState.putParcelableArrayList(ATTRIBUTE_NAME_IMAGE, scaledPhotos);
+        Log.v("dimamir999", "save list data");
     }
 
     public void changeGeoLocationServiceStatus(View view){
@@ -162,7 +203,9 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         }
     }
 
-    private class ScalePhotoBinder implements SimpleAdapter.ViewBinder {
+
+
+    private class PhotoBinder implements SimpleAdapter.ViewBinder {
 
         @Override
         public boolean setViewValue(View view, Object data,
@@ -174,5 +217,9 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
             }
             return false;
         }
+    }
+
+    public Activity getContextActivity(){
+        return this;
     }
 }
