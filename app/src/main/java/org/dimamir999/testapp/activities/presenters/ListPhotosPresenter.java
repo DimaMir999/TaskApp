@@ -61,14 +61,9 @@ public class ListPhotosPresenter {
         remover.execute(photoObject.getId());
     }
 
-//    public ArrayList<MarkerOptions> makeMarkerOptionsFromList(){
-//        ArrayList<MarkerOptions> markers = new ArrayList<MarkerOptions>();
-//        for(PhotoWithGeoTag userPhoto : viewedPhotos){
-//            markers.add(new MarkerOptions().position(new LatLng(userPhoto.getLatitude(), userPhoto.getLongitude()))
-//                    .title(userPhoto.getDate().toString()));
-//        }
-//        return markers;
-//    }
+    public void addNewItem(PhotoWithGeoTag photoObject){
+        viewedPhotos.add(photoObject);
+    }
 
     private class AsyncRemover extends AsyncTask<Long, Void, Void> {
 

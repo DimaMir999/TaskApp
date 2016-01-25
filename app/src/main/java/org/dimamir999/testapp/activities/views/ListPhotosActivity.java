@@ -86,22 +86,6 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     @Override
     protected void onResume() {
         setServiceButtonText();
-        data.clear();
-        ArrayList<PhotoWithGeoTag> photosList = presenter.getListData();
-        for (int i = 0; i < photosList.size(); i++) {
-            Map<String, Object> itemMap = new HashMap<String, Object>();
-            PhotoWithGeoTag photoObject = photosList.get(i);
-            itemMap.put(ATTRIBUTE_NAME_TEXT, photoObject.getDate().toString());
-            Bitmap photo = photoObject.getPhoto();
-            Log.v("dimamir999", "photo loaded");
-            if(photo.getHeight() != LIST_PHOTO_HEIGHT || photo.getWidth() != LIST_PHOTO_WIDTH) {
-                Log.v("dimamir999", "photo scaled");
-                photo = photoScaler.scaleForList(photo, LIST_PHOTO_HEIGHT, LIST_PHOTO_WIDTH);
-            }
-            itemMap.put(ATTRIBUTE_NAME_IMAGE, photo);
-            data.add(itemMap);
-        }
-        adapter.notifyDataSetChanged();
         super.onResume();
     }
 
@@ -127,8 +111,20 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
             Log.v("dimamir999", "successful recieve of the way");
         }
         if(requestCode == PICK_PHOTO_REQUEST_CODE){
-            PhotoWithGeoTag photoWithGeoTag = data.getParcelableExtra(PickPhotoFragment.PHOTO_OBJECT_CODE);
             Log.v("dimamir999", "photo arrived");
+            PhotoWithGeoTag photoObject = data.getParcelableExtra(PickPhotoFragment.PHOTO_OBJECT_CODE);
+            Bitmap photo = photoObject.getPhoto();
+            Log.v("dimamir999", "photo loaded");
+            presenter.addNewItem(photoObject);
+            if(photo.getHeight() != LIST_PHOTO_HEIGHT || photo.getWidth() != LIST_PHOTO_WIDTH) {
+                Log.v("dimamir999", "photo scaled");
+                photo = photoScaler.scaleForList(photo, LIST_PHOTO_HEIGHT, LIST_PHOTO_WIDTH);
+            }
+            Map<String, Object> itemMap = new HashMap<String, Object>();
+            itemMap.put(ATTRIBUTE_NAME_TEXT, photoObject.getDate().toString());
+            itemMap.put(ATTRIBUTE_NAME_IMAGE, photo);
+            this.data.add(itemMap);
+            adapter.notifyDataSetChanged();
         }
     }
 
