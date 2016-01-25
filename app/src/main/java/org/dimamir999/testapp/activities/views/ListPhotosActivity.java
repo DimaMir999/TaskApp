@@ -84,9 +84,9 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     }
 
     @Override
-    protected void onResume() {
+    protected void onStart() {
         setServiceButtonText();
-        super.onResume();
+        super.onStart();
     }
 
     public void toPickPhotoActivity(View view){
