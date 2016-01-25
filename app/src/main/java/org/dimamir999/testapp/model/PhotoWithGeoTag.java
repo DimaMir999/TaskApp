@@ -43,13 +43,6 @@ public class PhotoWithGeoTag implements Parcelable{
         this.path = path;
     }
 
-    public MarkerOptions makeMarkerOption(Activity activity){
-        ImageView imageView = (ImageView) activity.findViewById(R.id.photo);
-        imageView.setImageBitmap(photo);
-        return new MarkerOptions().position(new LatLng(latitude, longitude)).icon(
-                BitmapDescriptorFactory.fromBitmap(photo));
-    }
-
     public Bitmap getPhoto() {
         if(photo == null) {
             Bitmap bitmap = BitmapFactory.decodeFile(path);

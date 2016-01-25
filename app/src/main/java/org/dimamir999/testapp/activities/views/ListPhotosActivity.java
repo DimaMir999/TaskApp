@@ -32,6 +32,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     private static final int LIST_PHOTO_HEIGHT = 250;
     private static final int LIST_PHOTO_WIDTH = 250;
     public static final int DISTANCE_RESPONSE = 0;
+    private static final int PICK_PHOTO_REQUEST_CODE = 1;
 
     private ListPhotosPresenter presenter;
     private ArrayList<Map<String, Object>> data;
@@ -106,7 +107,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
 
     public void toPickPhotoActivity(View view){
         Intent intent = new Intent(this, PhotoPickActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, PICK_PHOTO_REQUEST_CODE);
     }
 
     public void toMapActivity(View view){
@@ -124,6 +125,10 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
                         + " km");
             }
             Log.v("dimamir999", "successful recieve of the way");
+        }
+        if(requestCode == PICK_PHOTO_REQUEST_CODE){
+            PhotoWithGeoTag photoWithGeoTag = data.getParcelableExtra(PickPhotoFragment.PHOTO_OBJECT_CODE);
+            Log.v("dimamir999", "photo arrived");
         }
     }
 

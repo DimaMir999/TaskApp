@@ -66,7 +66,7 @@ public class PickPhotoPresenter {
                             currentDate);
                     photosDAO.add(userPhoto);
                     Log.v("dimamir999", userPhoto.toString());
-                    view.toListPhotosActivity();
+                    view.toListPhotosActivity(userPhoto);
                 }
             } else {
                 view.showErrorMessage("Turn on GPS or internet");

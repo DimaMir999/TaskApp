@@ -18,11 +18,14 @@ import android.widget.Toast;
 
 import org.dimamir999.testapp.R;
 import org.dimamir999.testapp.activities.presenters.PickPhotoPresenter;
+import org.dimamir999.testapp.model.PhotoWithGeoTag;
 
 /**
  * Created by dimamir999 on 19.01.16.
  */
 public class PickPhotoFragment extends Fragment implements IPickPhotoView {
+
+    public static final String PHOTO_OBJECT_CODE = "photo object";
 
     private PickPhotoPresenter presenter;
 
@@ -92,7 +95,10 @@ public class PickPhotoFragment extends Fragment implements IPickPhotoView {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
-    public void toListPhotosActivity(){
+    public void toListPhotosActivity(PhotoWithGeoTag photoObject){
+        Intent intent = new Intent();
+        intent.putExtra(PHOTO_OBJECT_CODE, photoObject);
+        getActivity().setResult(0 ,intent);
         getActivity().finish();
     }
 
