@@ -163,22 +163,6 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-//        ArrayList<String> dates = savedInstanceState.getStringArrayList(ATTRIBUTE_NAME_DATE);
-//        ArrayList<Bitmap> scaledPhotos = savedInstanceState.getParcelableArrayList(ATTRIBUTE_NAME_IMAGE);
-//        ArrayList<Map<String, Object>> restoredData = new ArrayList<>();
-//        for(int i = 0;i < dates.size();i++){
-//            Map<String, Object> itemData = new HashMap<>();
-//            itemData.put(ATTRIBUTE_NAME_DATE, dates.get(i));
-//            itemData.put(ATTRIBUTE_NAME_IMAGE, scaledPhotos.get(i));
-//            restoredData.add(itemData);
-//        }
-//        listData = restoredData;
-//        Log.v("dimamir999", "restore list data");
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         ArrayList<String> dates = new ArrayList<String>();
