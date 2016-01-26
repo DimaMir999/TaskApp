@@ -11,6 +11,11 @@ import android.util.Log;
 public class DBHelper extends SQLiteOpenHelper{
 
     private final static String DB_NAME = "GeoPhotos";
+    private final static String PHOTOS_TABLE_CREATION = "create table photos ( id integer primary key" +
+            " autoincrement, path text, longitude real, latitude real, date integer );";
+    private final static String DISTANCES_TABLE_CREATION = "create table distances (id integer primary key" +
+            " autoincrement, distance real, date integer);";
+    private final static String CREATION_SCRIPT = PHOTOS_TABLE_CREATION + DISTANCES_TABLE_CREATION;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, 1);
@@ -19,18 +24,7 @@ public class DBHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase database) {
         Log.d("dimamir999", "Creation of database");
-        database.execSQL("create table photos ("
-                + "id integer primary key autoincrement,"
-                + "path text,"
-                + "longitude real,"
-                + "latitude real,"
-                + "date integer"
-                + ");");
-        database.execSQL("create table distances ("
-                + "id integer primary key autoincrement,"
-                + "distance real,"
-                + "date integer"
-                + ");");
+        database.execSQL(CREATION_SCRIPT);
     }
 
     @Override
