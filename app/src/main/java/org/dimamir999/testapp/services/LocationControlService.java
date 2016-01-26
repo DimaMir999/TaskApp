@@ -16,6 +16,9 @@ import org.dimamir999.testapp.activities.views.ListPhotosActivity;
 
 public class LocationControlService extends Service {
 
+    public static final int MIN_UPDATE_TIME = 20 * 1000;
+    public static final int MIN_UPDATE_DISTANCE_GPS = 20;
+    public static final int MIN_UPDATE_DISTANCE_NETWORK = 100;
     public static final String DISTANCE_CODE = "passed way";
     public static boolean isRunning = false;
 
@@ -34,12 +37,12 @@ public class LocationControlService extends Service {
         locationListener = new MyLocationListener();
 
         //try to check location every 2 min and notify if location changed if delta more than 100 meters
-//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 20 * 1000, 20,
-//                this.locationListener);
-//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 120, 100,
-//                this.locationListener);
-//        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 1000 * 120, 100,
-//                this.locationListener);
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_UPDATE_TIME,
+//                MIN_UPDATE_DISTANCE_GPS, this.locationListener);
+//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_UPDATE_TIME,
+//                MIN_UPDATE_DISTANCE_NETWORK, this.locationListener);
+//        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MIN_UPDATE_TIME,
+//                MIN_UPDATE_DISTANCE_NETWORK, this.locationListener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
                 this.locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
