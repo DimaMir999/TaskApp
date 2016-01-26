@@ -8,7 +8,7 @@ import android.util.Log;
 /**
  * Created by dimamir999 on 18.01.16.
  */
-public class DBHelper extends SQLiteOpenHelper{
+public class DBConnectionManager extends SQLiteOpenHelper{
 
     private final static String DB_NAME = "GeoPhotos";
     private final static String PHOTOS_TABLE_CREATION = "create table photos ( id integer primary key" +
@@ -17,7 +17,17 @@ public class DBHelper extends SQLiteOpenHelper{
             " autoincrement, distance real, date integer);";
     private final static String CREATION_SCRIPT = PHOTOS_TABLE_CREATION + DISTANCES_TABLE_CREATION;
 
-    public DBHelper(Context context) {
+    private static DBConnectionManager dbHelper;
+    private static SQLiteDatabase database;
+
+    public static synchronized DBConnectionManager getInstance(Context context){
+        if(dbHelper == null){
+            dbHelper = new DBConnectionManager(context);
+        }
+        return dbHelper;
+    }
+
+    private DBConnectionManager(Context context) {
         super(context, DB_NAME, null, 1);
     }
 

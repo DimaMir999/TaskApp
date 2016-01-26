@@ -36,7 +36,7 @@ public class ListPhotosPresenter {
 
     public ListPhotosPresenter(IListPhotoView view) {
         this.view = view;
-        photoWithGeoTagDAO = new PhotoWithGeoTagDAO(view.getContextActivity());
+        photoWithGeoTagDAO = new PhotoWithGeoTagDAO(view.getContextActivity().getApplicationContext());
     }
 
     public ArrayList<PhotoWithGeoTag> getListData(){

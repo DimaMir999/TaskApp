@@ -18,35 +18,32 @@ import java.util.Date;
 public class PhotoWithGeoTagDAO {
 
     //should  be one object of database
-    private SQLiteOpenHelper dbHelper;
+    private SQLiteOpenHelper connectionManager;
 
     public PhotoWithGeoTagDAO(Context context) {
-        this.dbHelper = new DBHelper(context);
+        this.connectionManager = DBConnectionManager.getInstance(context);
     }
 
     public void add(PhotoWithGeoTag photoObject){
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        SQLiteDatabase database = connectionManager.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("path", photoObject.getPath());
         contentValues.put("date", photoObject.getDate().getTime());
         contentValues.put("latitude", photoObject.getLatitude());
         contentValues.put("longitude", photoObject.getLongitude());
-        // вставляем запись и получаем ее ID
-        long rowID = database.insert("photos", null, contentValues);
-        database.close();
+        database.insert("photos", null, contentValues);
         Log.d("dimamir999", "1 row inserted to photos table");
     }
 
     public void delete(long id){
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        SQLiteDatabase database = connectionManager.getWritableDatabase();
         database.delete("photos", "id = " + id, null);
-        database.close();
         Log.d("dimamir999", "1 row deleted");
     }
 
 
     public ArrayList<PhotoWithGeoTag> getBetweenDates(Date startDate, Date endDate){
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        SQLiteDatabase database = connectionManager.getReadableDatabase();
         ArrayList<PhotoWithGeoTag> result = new ArrayList<PhotoWithGeoTag>();
         String selectionString = "date > ? AND date < ?";
         String[] selectionArgs = new String[]{String.valueOf(startDate.getTime()), String.valueOf(endDate.getTime())};
@@ -67,8 +64,10 @@ public class PhotoWithGeoTagDAO {
             } while (cursor.moveToNext());
         } else
             Log.d("dimamir999", "0 rows");
-        dbHelper.close();
+        cursor.close();
         return  result;
     }
+
+
 
 }

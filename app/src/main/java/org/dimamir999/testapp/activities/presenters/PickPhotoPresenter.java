@@ -39,7 +39,7 @@ public class PickPhotoPresenter {
 
     public PickPhotoPresenter(IPickPhotoView view) {
         this.view = view;
-        this.photosDAO = new PhotoWithGeoTagDAO(view.getContextActivity());
+        this.photosDAO = new PhotoWithGeoTagDAO(view.getContextActivity().getApplicationContext());
     }
 
     public void loadPhotoFromURL(String url) {
