@@ -50,6 +50,9 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         photosListView = (ListView) findViewById(R.id.photos_list);
         dictanceView = (TextView) findViewById(R.id.distance_view);
 
+        if(LocationControlService.isRunning)
+            presenter.startLocationControlService();
+
         if(savedInstanceState == null) {
             listData = new ArrayList<Map<String, Object>>();
             ArrayList<PhotoWithGeoTag> photosList = presenter.getListData();
