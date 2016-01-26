@@ -52,7 +52,7 @@ public class ListPhotosPresenter {
         Date startDate = new Date(startTime.toMillis(true));
         Date endDate = new Date(endTime.toMillis(true));
         viewedPhotos = photoWithGeoTagDAO.getBetweenDates(startDate, endDate);
-        return photoWithGeoTagDAO.getBetweenDates(startDate, endDate);
+        return viewedPhotos;
     }
 
     public void deletePhoto(int position){
