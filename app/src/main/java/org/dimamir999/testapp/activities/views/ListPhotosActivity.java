@@ -31,7 +31,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     private static final String ATTRIBUTE_NAME_IMAGE = "image";
     private static final int LIST_PHOTO_HEIGHT = 250;
     private static final int LIST_PHOTO_WIDTH = 250;
-    public static final int DISTANCE_RESPONSE = 0;
+    public static final int DISTANCE_RESPONSE = 2;
     private static final int PICK_PHOTO_REQUEST_CODE = 1;
 
     private ListPhotosPresenter presenter;
@@ -128,7 +128,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
             }
             Log.v("dimamir999", "successful recieve of the way");
         }
-        if(requestCode == PICK_PHOTO_REQUEST_CODE && resultCode == RESULT_OK){
+        else if(requestCode == PICK_PHOTO_REQUEST_CODE && resultCode == RESULT_OK){
             Log.v("dimamir999", "photo arrived");
             PhotoWithGeoTag photoObject = data.getParcelableExtra(PickPhotoFragment.PHOTO_OBJECT_CODE);
             Bitmap photo = photoObject.getPhoto();
