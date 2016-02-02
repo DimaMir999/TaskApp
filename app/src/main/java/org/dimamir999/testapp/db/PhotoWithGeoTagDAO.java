@@ -68,6 +68,8 @@ public class PhotoWithGeoTagDAO {
         return  result;
     }
 
-
+    public void closeConnection(){
+        connectionManager.close();
+    }
 
 }

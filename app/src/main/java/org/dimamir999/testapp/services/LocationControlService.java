@@ -82,6 +82,7 @@ public class LocationControlService extends Service {
                     e.printStackTrace();
                 }
             }
+            //write to db
             Log.v("dimamir999", "Current location " + location.getLatitude() + " " + location.getLongitude());
         }
 

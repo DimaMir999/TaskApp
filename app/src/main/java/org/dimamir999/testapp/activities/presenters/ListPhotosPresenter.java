@@ -88,4 +88,8 @@ public class ListPhotosPresenter {
         });
         serviceThread.start();
     }
+
+    public void сloseDBconnection(){
+        photoWithGeoTagDAO.closeConnection();
+    }
 }

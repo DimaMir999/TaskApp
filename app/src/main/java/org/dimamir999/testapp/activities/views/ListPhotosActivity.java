@@ -206,6 +206,12 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.сloseDBconnection();
+    }
+
     public Activity getContextActivity(){
         return this;
     }
