@@ -13,6 +13,8 @@ import android.util.Log;
 
 import org.dimamir999.testapp.activities.presenters.ListPhotosPresenter;
 import org.dimamir999.testapp.activities.views.ListPhotosActivity;
+import org.dimamir999.testapp.db.VisitedPointDAO;
+import org.dimamir999.testapp.model.VisitedPoint;
 
 public class LocationControlService extends Service {
 
@@ -27,6 +29,7 @@ public class LocationControlService extends Service {
     private Location lastLocation;
     private double passedWay;
     private PendingIntent pendingIntent;
+    private VisitedPointDAO visitedPointDAO;
 
     @Override
     public void onCreate()
@@ -35,6 +38,7 @@ public class LocationControlService extends Service {
         isRunning = true;
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener();
+        visitedPointDAO = new VisitedPointDAO(this);
 
         //try to check location every 2 min and notify if location changed if delta more than 100 meters
 //        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_UPDATE_TIME,
@@ -54,7 +58,9 @@ public class LocationControlService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        pendingIntent = intent.getParcelableExtra(ListPhotosPresenter.PENDING_INTENT_CODE);
+        if(intent != null) {
+            pendingIntent = intent.getParcelableExtra(ListPhotosPresenter.PENDING_INTENT_CODE);
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -82,7 +88,8 @@ public class LocationControlService extends Service {
                     e.printStackTrace();
                 }
             }
-            //write to db
+            VisitedPoint visitedPoint = new VisitedPoint(location.getLongitude(), location.getLatitude(), location.getTime());
+            visitedPointDAO.add(visitedPoint);
             Log.v("dimamir999", "Current location " + location.getLatitude() + " " + location.getLongitude());
         }
 
@@ -107,5 +114,6 @@ public class LocationControlService extends Service {
         Log.v("dimamir999", "LocationControlService stoped");
         isRunning = false;
         locationManager.removeUpdates(this.locationListener);
+        visitedPointDAO.closeConnection();
     }
 }
