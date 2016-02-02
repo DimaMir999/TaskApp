@@ -13,12 +13,11 @@ public class DBConnectionManager extends SQLiteOpenHelper{
     private final static String DB_NAME = "GeoPhotos";
     private final static String PHOTOS_TABLE_CREATION = "create table photos ( id integer primary key" +
             " autoincrement, path text, longitude real, latitude real, date integer );";
-    private final static String DISTANCES_TABLE_CREATION = "create table distances (id integer primary key" +
-            " autoincrement, distance real, date integer);";
+    private final static String DISTANCES_TABLE_CREATION = "create table visited_points (id integer primary key" +
+            " autoincrement, longitude real, latitude real, date integer);";
     private final static String CREATION_SCRIPT = PHOTOS_TABLE_CREATION + DISTANCES_TABLE_CREATION;
 
     private static DBConnectionManager dbHelper;
-    private static SQLiteDatabase database;
 
     public static synchronized DBConnectionManager getInstance(Context context){
         if(dbHelper == null){

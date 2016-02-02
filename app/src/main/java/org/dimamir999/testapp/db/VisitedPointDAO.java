@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import org.dimamir999.testapp.model.PhotoWithGeoTag;
+import org.dimamir999.testapp.model.VisitedPoint;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,51 +16,41 @@ import java.util.Date;
 /**
  * Created by dimamir999 on 18.01.16.
  */
-public class PhotoWithGeoTagDAO {
+public class VisitedPointDAO {
 
     private SQLiteOpenHelper connectionManager;
 
-    public PhotoWithGeoTagDAO(Context context) {
+    public VisitedPointDAO(Context context) {
         this.connectionManager = DBConnectionManager.getInstance(context);
     }
 
-    public void add(PhotoWithGeoTag photoObject){
+    public void add(VisitedPoint visitedPoint){
         SQLiteDatabase database = connectionManager.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("path", photoObject.getPath());
-        contentValues.put("date", photoObject.getDate().getTime());
-        contentValues.put("latitude", photoObject.getLatitude());
-        contentValues.put("longitude", photoObject.getLongitude());
-        database.insert("photos", null, contentValues);
-        Log.d("dimamir999", "1 row inserted to photos table");
+        contentValues.put("date", visitedPoint.getDate().getTime());
+        contentValues.put("latitude", visitedPoint.getLatitude());
+        contentValues.put("longitude", visitedPoint.getLongitude());
+        database.insert("visited_points", null, contentValues);
+        Log.d("dimamir999", "1 row inserted to visited_points table");
     }
 
-    public void delete(long id){
-        SQLiteDatabase database = connectionManager.getWritableDatabase();
-        database.delete("photos", "id = " + id, null);
-        Log.d("dimamir999", "1 row deleted");
-    }
-
-
-    public ArrayList<PhotoWithGeoTag> getBetweenDates(Date startDate, Date endDate){
+    public ArrayList<VisitedPoint> getBetweenDates(Date startDate, Date endDate){
         SQLiteDatabase database = connectionManager.getReadableDatabase();
-        ArrayList<PhotoWithGeoTag> result = new ArrayList<PhotoWithGeoTag>();
+        ArrayList<VisitedPoint> result = new ArrayList<VisitedPoint>();
         String selectionString = "date > ? AND date < ?";
         String[] selectionArgs = new String[]{String.valueOf(startDate.getTime()), String.valueOf(endDate.getTime())};
-        Cursor cursor = database.query("photos", null,selectionString , selectionArgs, null, null, null);
+        Cursor cursor = database.query("visited_points", null,selectionString , selectionArgs, null, null, null);
 
         Log.d("dimamir999", "Query with params " + startDate + " " + endDate);
         if (cursor.moveToFirst()) {
             int idColIndex = cursor.getColumnIndex("id");
-            int pathColIndex = cursor.getColumnIndex("path");
             int dateColIndex = cursor.getColumnIndex("date");
             int latitudeColIndex = cursor.getColumnIndex("latitude");
             int longitudeColIndex = cursor.getColumnIndex("longitude");
             do {
-                PhotoWithGeoTag photoObject = new PhotoWithGeoTag(cursor.getLong(idColIndex),
-                        cursor.getString(pathColIndex), cursor.getDouble(longitudeColIndex),
+                VisitedPoint visitedPoint = new VisitedPoint(cursor.getLong(idColIndex), cursor.getDouble(longitudeColIndex),
                         cursor.getDouble(latitudeColIndex), new Date(cursor.getLong(dateColIndex)));
-                result.add(photoObject);
+                result.add(visitedPoint);
             } while (cursor.moveToNext());
         } else
             Log.d("dimamir999", "0 rows");
@@ -70,5 +61,4 @@ public class PhotoWithGeoTagDAO {
     public void closeConnection(){
         connectionManager.close();
     }
-
 }
