@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import org.dimamir999.testapp.model.PhotoWithGeoTag;
+import org.dimamir999.testapp.model.VisitedPoint;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,12 +26,15 @@ public class PhotoWithGeoTagDAO {
 
     public void add(PhotoWithGeoTag photoObject){
         SQLiteDatabase database = connectionManager.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("path", photoObject.getPath());
-        contentValues.put("date", photoObject.getDate().getTime());
-        contentValues.put("latitude", photoObject.getLatitude());
-        contentValues.put("longitude", photoObject.getLongitude());
-        database.insert("photos", null, contentValues);
+        ContentValues locationValues = new ContentValues();
+        locationValues.put("date", photoObject.getDate().getTime());
+        locationValues.put("latitude", photoObject.getLatitude());
+        locationValues.put("longitude", photoObject.getLongitude());
+        long locationId = database.insert("visited_points", null, locationValues);
+        ContentValues photoValues = new ContentValues();
+        photoValues.put("path", photoObject.getPath());
+        photoValues.put("location_id", locationId);
+        database.insert("photos", null, photoValues);
         Log.d("dimamir999", "1 row inserted to photos table");
     }
 
@@ -44,21 +48,26 @@ public class PhotoWithGeoTagDAO {
     public ArrayList<PhotoWithGeoTag> getBetweenDates(Date startDate, Date endDate){
         SQLiteDatabase database = connectionManager.getReadableDatabase();
         ArrayList<PhotoWithGeoTag> result = new ArrayList<PhotoWithGeoTag>();
-        String selectionString = "date > ? AND date < ?";
+        String query = "SELECT p.id id_photo, p.path path, l.id id_loc, l.longitude longitude, " +
+                "l.latitude latitude, l.date date " +
+                "FROM photos p JOIN visited_points l " +
+                "ON p.location_id = l.id AND l.date > ? AND l.date < ?;";
         String[] selectionArgs = new String[]{String.valueOf(startDate.getTime()), String.valueOf(endDate.getTime())};
-        Cursor cursor = database.query("photos", null,selectionString , selectionArgs, null, null, null);
+        Cursor cursor = database.rawQuery(query, selectionArgs);
 
         Log.d("dimamir999", "Query with params " + startDate + " " + endDate);
         if (cursor.moveToFirst()) {
-            int idColIndex = cursor.getColumnIndex("id");
+            int idColIndex = cursor.getColumnIndex("id_photo");
+            int idLocIndex = cursor.getColumnIndex("id_loc");
             int pathColIndex = cursor.getColumnIndex("path");
             int dateColIndex = cursor.getColumnIndex("date");
             int latitudeColIndex = cursor.getColumnIndex("latitude");
             int longitudeColIndex = cursor.getColumnIndex("longitude");
             do {
-                PhotoWithGeoTag photoObject = new PhotoWithGeoTag(cursor.getLong(idColIndex),
-                        cursor.getString(pathColIndex), cursor.getDouble(longitudeColIndex),
+                VisitedPoint visitedPoint = new VisitedPoint(cursor.getLong(idLocIndex), cursor.getDouble(longitudeColIndex),
                         cursor.getDouble(latitudeColIndex), new Date(cursor.getLong(dateColIndex)));
+                PhotoWithGeoTag photoObject = new PhotoWithGeoTag(cursor.getLong(idColIndex),
+                        cursor.getString(pathColIndex), visitedPoint);
                 result.add(photoObject);
             } while (cursor.moveToNext());
         } else

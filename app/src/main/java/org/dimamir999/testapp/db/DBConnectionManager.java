@@ -12,7 +12,7 @@ public class DBConnectionManager extends SQLiteOpenHelper{
 
     private final static String DB_NAME = "GeoPhotos";
     private final static String PHOTOS_TABLE_CREATION = "create table photos ( id integer primary key" +
-            " autoincrement, path text, longitude real, latitude real, date integer );";
+            " autoincrement, path text, location_id integer, FOREIGN KEY(location_id) REFERENCES visited_point(id) );";
     private final static String VISITED_PHOTOS_TABLE_CREATION = "create table visited_points (id integer primary key" +
             " autoincrement, longitude real, latitude real, date integer);";
 
@@ -32,8 +32,8 @@ public class DBConnectionManager extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase database) {
         Log.d("dimamir999", "Creation of database");
-        database.execSQL(PHOTOS_TABLE_CREATION);
         database.execSQL(VISITED_PHOTOS_TABLE_CREATION);
+        database.execSQL(PHOTOS_TABLE_CREATION);
     }
 
     @Override

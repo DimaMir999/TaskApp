@@ -15,6 +15,7 @@ import android.util.Log;
 import org.dimamir999.testapp.activities.views.IPickPhotoView;
 import org.dimamir999.testapp.db.PhotoWithGeoTagDAO;
 import org.dimamir999.testapp.model.PhotoWithGeoTag;
+import org.dimamir999.testapp.model.VisitedPoint;
 import org.dimamir999.testapp.services.GeoLocationService;
 import org.dimamir999.testapp.services.PhotoSaver;
 import org.dimamir999.testapp.services.PhotoScaler;
@@ -62,8 +63,8 @@ public class PickPhotoPresenter {
                 if (path == null) {
                     view.showErrorMessage("Cant save photo");
                 } else {
-                    PhotoWithGeoTag userPhoto = new PhotoWithGeoTag(path, location.getLongitude(), location.getLatitude(),
-                            currentDate);
+                    PhotoWithGeoTag userPhoto = new PhotoWithGeoTag(path, new VisitedPoint(location.getLongitude(), location.getLatitude(),
+                            currentDate.getTime()));
                     photosDAO.add(userPhoto);
                     Log.v("dimamir999", userPhoto.toString());
                     view.toListPhotosActivity(userPhoto);

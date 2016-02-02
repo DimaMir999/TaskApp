@@ -23,23 +23,17 @@ public class PhotoWithGeoTag implements Parcelable{
 
     private long id;
     private Bitmap photo;
-    private double longitude;
-    private double latitude;
-    private Date date;
+    private VisitedPoint location;
     private String path;
 
-    public PhotoWithGeoTag(String path, double longitude, double latitude, Date date) {
+    public PhotoWithGeoTag(String path, VisitedPoint location) {
         this.path = path;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.date = date;
+        this.location = location;
     }
 
-    public PhotoWithGeoTag(long id, String path, double longitude, double latitude, Date date) {
+    public PhotoWithGeoTag(long id, String path, VisitedPoint location) {
         this.id = id;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.date = date;
+        this.location = location;
         this.path = path;
     }
 
@@ -61,35 +55,21 @@ public class PhotoWithGeoTag implements Parcelable{
     }
 
     public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+        return location.getLongitude();
     }
 
     public double getLatitude() {
-        return latitude;
+        return location.getLatitude();
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
 
     public Date getDate() {
-        return date;
+        return location.getDate();
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
 
     public String getPath() {
         return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public long getId() {
@@ -99,29 +79,25 @@ public class PhotoWithGeoTag implements Parcelable{
     @Override
     public String toString() {
         return "PhotoWithGeoTag{" +
-                "longitude=" + longitude +
-                ", latitude=" + latitude +
-                ", date=" + date +
+                "longitude=" + getLongitude() +
+                ", latitude=" + getLatitude() +
+                ", date=" + getDate() +
                 ", path='" + path + '\'' +
                 '}';
     }
 
     protected PhotoWithGeoTag(Parcel in) {
         id = in.readLong();
-        date = new Date(in.readLong());
         photo = in.readParcelable(Bitmap.class.getClassLoader());
-        longitude = in.readDouble();
-        latitude = in.readDouble();
+        location = in.readParcelable(VisitedPoint.class.getClassLoader());
         path = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeLong(date.getTime());
         dest.writeParcelable(photo, flags);
-        dest.writeDouble(longitude);
-        dest.writeDouble(latitude);
+        dest.writeParcelable(location, flags);
         dest.writeString(path);
     }
 

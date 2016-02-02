@@ -1,11 +1,14 @@
 package org.dimamir999.testapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
 /**
  * Created by dimamir999 on 02.02.16.
  */
-public class VisitedPoint {
+public class VisitedPoint implements Parcelable{
 
     private long id;
     private double longitude;
@@ -55,5 +58,37 @@ public class VisitedPoint {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    protected VisitedPoint(Parcel in) {
+        id = in.readLong();
+        date = new Date(in.readLong());
+        longitude = in.readDouble();
+        latitude = in.readDouble();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeLong(date.getTime());
+        dest.writeDouble(longitude);
+        dest.writeDouble(latitude);
+    }
+
+    public static final Creator<VisitedPoint> CREATOR = new Creator<VisitedPoint>() {
+        @Override
+        public VisitedPoint createFromParcel(Parcel in) {
+            return new VisitedPoint(in);
+        }
+
+        @Override
+        public VisitedPoint[] newArray(int size) {
+            return new VisitedPoint[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }
