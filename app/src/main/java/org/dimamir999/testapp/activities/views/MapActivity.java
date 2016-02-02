@@ -45,9 +45,11 @@ public class MapActivity extends Activity implements OnMapReadyCallback, IMapVie
         for(MarkerOptions marker : markers){
             map.addMarker(marker);
         }
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(markers.get(markers.size() - 1).getPosition())
-                .zoom(12).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        if(photoObjects.size() != 0) {
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(markers.get(markers.size() - 1).getPosition())
+                    .zoom(12).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
     }
 }

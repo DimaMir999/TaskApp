@@ -98,7 +98,7 @@ public class PickPhotoFragment extends Fragment implements IPickPhotoView {
     public void toListPhotosActivity(PhotoWithGeoTag photoObject){
         Intent intent = new Intent();
         intent.putExtra(PHOTO_OBJECT_CODE, photoObject);
-        getActivity().setResult(0 ,intent);
+        getActivity().setResult(Activity.RESULT_OK ,intent);
         getActivity().finish();
     }
 

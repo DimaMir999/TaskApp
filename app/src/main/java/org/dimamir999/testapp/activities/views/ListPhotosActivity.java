@@ -128,7 +128,7 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
             }
             Log.v("dimamir999", "successful recieve of the way");
         }
-        if(requestCode == PICK_PHOTO_REQUEST_CODE){
+        if(requestCode == PICK_PHOTO_REQUEST_CODE && resultCode == RESULT_OK){
             Log.v("dimamir999", "photo arrived");
             PhotoWithGeoTag photoObject = data.getParcelableExtra(PickPhotoFragment.PHOTO_OBJECT_CODE);
             Bitmap photo = photoObject.getPhoto();
