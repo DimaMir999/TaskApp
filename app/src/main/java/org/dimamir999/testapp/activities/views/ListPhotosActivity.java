@@ -17,6 +17,7 @@ import android.widget.TextView;
 import org.dimamir999.testapp.R;
 import org.dimamir999.testapp.activities.presenters.ListPhotosPresenter;
 import org.dimamir999.testapp.model.PhotoWithGeoTag;
+import org.dimamir999.testapp.services.CurrentDateService;
 import org.dimamir999.testapp.services.LocationControlService;
 import org.dimamir999.testapp.services.PhotoScaler;
 
@@ -115,8 +116,6 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     public void toMapActivity(View view){
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(ListPhotosPresenter.PHOTO_OBJECTS, presenter.getListData());
-        intent.putExtra("start date", 23478932l);
-        intent.putExtra("end date", 23483425l);
         startActivity(intent);
     }
 

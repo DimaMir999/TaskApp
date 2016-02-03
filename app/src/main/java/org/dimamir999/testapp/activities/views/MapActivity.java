@@ -1,6 +1,12 @@
 package org.dimamir999.testapp.activities.views;
 
 import android.app.Activity;
+import android.app.IntentService;
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
+import android.content.Intent;
+import android.content.Loader;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,12 +29,15 @@ import org.dimamir999.testapp.activities.presenters.ListPhotosPresenter;
 import org.dimamir999.testapp.activities.presenters.MapPresenter;
 import org.dimamir999.testapp.model.PhotoWithGeoTag;
 import org.dimamir999.testapp.model.VisitedPoint;
+import org.dimamir999.testapp.services.CurrentDateService;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 
 public class MapActivity extends Activity implements OnMapReadyCallback, IMapView {
+
+    private final static int ROUTE_LOADER_ID = 0;
 
     private GoogleMap map;
     private MapPresenter presenter;
@@ -55,9 +64,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, IMapVie
             map.addMarker(marker);
         }
 
-        //get date from intent
-
-        ArrayList<VisitedPoint> visitedPoints = null;
+        CurrentDateService dateService = new CurrentDateService();
+        Date startDate = dateService.getCurrentDateStart();
+        Date endDate = dateService.getCurrentDateEnd();
+        ArrayList<VisitedPoint> visitedPoints = presenter.getVisitedPoints(this,startDate, endDate);
         map.addPolyline(presenter.getPathFromPoints(visitedPoints));
 
         if(photoObjects.size() != 0) {
@@ -89,5 +99,4 @@ public class MapActivity extends Activity implements OnMapReadyCallback, IMapVie
         CameraUpdate track = CameraUpdateFactory.newLatLngBounds(latLngBounds,size, size, 35);
         map.moveCamera(track);
     }
-
 }
