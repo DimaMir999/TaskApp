@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.dimamir999.testapp.activities.views.IListPhotoView;
 import org.dimamir999.testapp.db.PhotoWithGeoTagDAO;
 import org.dimamir999.testapp.model.PhotoWithGeoTag;
+import org.dimamir999.testapp.services.CurrentDateService;
 import org.dimamir999.testapp.services.LocationControlService;
 
 import java.util.ArrayList;
@@ -42,16 +43,9 @@ public class ListPhotosPresenter {
 
     public ArrayList<PhotoWithGeoTag> getListData(){
         // get date current date(start of the day and end of the day)
-        Time time = new Time(Time.getCurrentTimezone());
-        time.setToNow();
-        Time startTime = new Time();
-        startTime.set(time.monthDay, time.month, time.year);
-        Time endTime = new Time();
-        time.set(time.toMillis(true) + TimeUnit.DAYS.toMillis(1));
-        endTime.set(time.monthDay, time.month, time.year);
-
-        Date startDate = new Date(startTime.toMillis(true));
-        Date endDate = new Date(endTime.toMillis(true));
+        CurrentDateService dateService = new CurrentDateService();
+        Date startDate = dateService.getCurrentDateStart();
+        Date endDate = dateService.getCurrentDateEnd();
         viewedPhotos = photoWithGeoTagDAO.getBetweenDates(startDate, endDate);
         return viewedPhotos;
     }

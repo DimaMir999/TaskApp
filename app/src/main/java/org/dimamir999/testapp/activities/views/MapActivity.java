@@ -1,22 +1,31 @@
 package org.dimamir999.testapp.activities.views;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.dimamir999.testapp.R;
 import org.dimamir999.testapp.activities.presenters.ListPhotosPresenter;
 import org.dimamir999.testapp.activities.presenters.MapPresenter;
 import org.dimamir999.testapp.model.PhotoWithGeoTag;
+import org.dimamir999.testapp.model.VisitedPoint;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class MapActivity extends Activity implements OnMapReadyCallback, IMapView {
@@ -45,11 +54,40 @@ public class MapActivity extends Activity implements OnMapReadyCallback, IMapVie
         for(MarkerOptions marker : markers){
             map.addMarker(marker);
         }
+
+        //get date from intent
+
+        ArrayList<VisitedPoint> visitedPoints = null;
+        map.addPolyline(presenter.getPathFromPoints(visitedPoints));
+
         if(photoObjects.size() != 0) {
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(markers.get(markers.size() - 1).getPosition())
-                    .zoom(12).build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            int size = getResources().getDisplayMetrics().widthPixels;
+            LatLngBounds latLngBounds = presenter.getBoundsOfPath().build();
+            CameraUpdate track = CameraUpdateFactory.newLatLngBounds(latLngBounds,size, size, 35);
+            map.moveCamera(track);
         }
     }
+
+    private void drawPath(GoogleMap map){
+        ArrayList<VisitedPoint> visitedPoints = new ArrayList<VisitedPoint>();
+        visitedPoints.add(new VisitedPoint(12, 24, 10));
+        visitedPoints.add(new VisitedPoint(42, 34, 11));
+        visitedPoints.add(new VisitedPoint(28, 33, 12));
+        visitedPoints.add(new VisitedPoint(86, 9, 13));
+        visitedPoints.add(new VisitedPoint(13, 102, 14));
+        PolylineOptions line = new PolylineOptions();
+        line = line.width(6f).color(Color.argb(200, 232, 79, 79));
+        LatLngBounds.Builder latLngBuilder = new LatLngBounds.Builder();
+        for (VisitedPoint vp : visitedPoints) {
+            LatLng location = new LatLng(vp.getLatitude(), vp.getLongitude());
+            line.add(location);
+            latLngBuilder.include(location);
+        }
+        map.addPolyline(line);
+        int size = getResources().getDisplayMetrics().widthPixels;
+        LatLngBounds latLngBounds = latLngBuilder.build();
+        CameraUpdate track = CameraUpdateFactory.newLatLngBounds(latLngBounds,size, size, 35);
+        map.moveCamera(track);
+    }
+
 }

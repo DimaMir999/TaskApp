@@ -115,6 +115,8 @@ public class ListPhotosActivity extends Activity implements IListPhotoView {
     public void toMapActivity(View view){
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(ListPhotosPresenter.PHOTO_OBJECTS, presenter.getListData());
+        intent.putExtra("start date", 23478932l);
+        intent.putExtra("end date", 23483425l);
         startActivity(intent);
     }
 
